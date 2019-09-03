@@ -13,6 +13,7 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaModel;
 import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.ui.JavaUI;
@@ -86,15 +87,16 @@ public class CellRunnerHandler extends AbstractHandler {
 			if (console!=null) {
 				String toConsole;
 				if (sel.getLength() > 0) {
-					toConsole = sel.getText().replace(System.lineSeparator(), "\t");
+					toConsole = "\t" + (sel.getText().replace(System.lineSeparator(), "\t"));
 				} else {
 					IJavaElement selected;
 					try {
 						selected = ((ICompilationUnit) elem).getElementAt(sel.getOffset());
 						if (selected != null && selected.getElementType() == IJavaElement.METHOD) {
 							IMethod method = (IMethod) selected;
+							IType cls = (IType) method.getAncestor(IJavaElement.TYPE);
 							toConsole = String.format("%s\t%s", method.getElementName(),
-									method.getAncestor(IJavaElement.TYPE).getElementName());
+									cls.getFullyQualifiedName());
 							/*
 							MessageDialog.openInformation(window.getShell(), "Notebook",
 									String.format("Selection length: %d, selection `%s`, Enclosing method: %s in class %s",sel.getLength(), sel.getText(),
